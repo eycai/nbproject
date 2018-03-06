@@ -87,6 +87,16 @@ define(function(require) {
     $('#add_file_html').attr('href', '/addhtml/' + Files.currentEnsemble);
     $('#add_file_youtube').attr('href', '/addyoutube/' + Files.currentEnsemble);
 
+    $('#file_upload_form').on('change', function() {
+      $('#submit-upload').attr('disabled', !$('#add_file_upload').val());
+    });
+    $('#html_upload_form').on('change', function() {
+      $('#submit-upload').attr('disabled', !($('#html_input_url').val() && $('#html_input_title').val()));
+    });
+    $('#youtube_upload_form').on('change', function() {
+        $('#submit-upload').attr('disabled', !$('#youtube_input_url').val('#youtube_input_url'));
+    });
+
     $('#add_file_dialog').dialog({
       title: 'Add a File...',
       width: 390,
@@ -98,16 +108,24 @@ define(function(require) {
           $(this).siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
         });
       },
-      buttons: {
-        Cancel: function () {
-          $(this).dialog('close');
+      buttons: [
+        {
+          text: "Cancel",
+          id: "cancel-upload",
+          click: function () {
+              $(this).dialog('close');
+          }
         },
-
-        Ok: function () {
-          $.concierge.get_component('source_id_getter')({}, Files.proceedUpload);
-          $.I('Uploading in progress...');
-        },
-      },
+        {
+          text: "Ok",
+          id: "submit-upload",
+          disabled: true,
+          click: function () {
+              $.concierge.get_component('source_id_getter')({}, Files.proceedUpload);
+              $.I('Uploading in progress...');
+          }
+        }
+      ]
     });
     $('#add_file_dialog').dialog('open');
   };
